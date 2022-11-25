@@ -2,7 +2,7 @@ import cors from "cors";
 import {logging, writeDateLogging} from "./middleware/loggingMiddleware";
 import userRoutes from "./routes/userRoute";
 import productRoute from "./routes/productRoute";
-import {SERVER_PORT} from "./config/settings";
+import {CLIENT_URL, SERVER_PORT} from "./config/settings";
 import {config} from "./config/mikro-orm";
 import logger from "./config/logger";
 import cookieParser from "cookie-parser";
@@ -17,9 +17,13 @@ export const DI = {} as {
 };
 
 app.use(express.json());
-app.use(cors());
-app.use(cookieParser());
 
+app.use(cors({
+    origin: CLIENT_URL,
+    credentials: true
+}));
+
+app.use(cookieParser());
 app.use(writeDateLogging);
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoute);
