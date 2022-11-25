@@ -1,6 +1,7 @@
 import {baseEntity} from "./baseEntity";
 import {Users} from "./userEntity";
+import {Products} from "./productEntity";
 
-export {baseEntity, Users};
+export {baseEntity, Users, Products};
 
-export default [baseEntity, Users];
+export default [baseEntity, Users, Products];

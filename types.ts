@@ -1,7 +1,7 @@
 import {Request} from "express";
 import {Users} from "./entities";
 
-export type UserRequest = Request & {user: Users | undefined};
+export type UserRequest = Request & {user: Users | undefined, locals: Date};
 
 export type productObject = {
     link: string,
@@ -9,7 +9,11 @@ export type productObject = {
     title: string,
     store: string,
     price: number,
-    img: string | undefined
+    image: string
+}
+
+export enum storeURLs {
+    'techno_dom'="https://www.technodom.kz/astana/catalog/"
 }
 
 export enum technoDomCategories {
