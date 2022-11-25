@@ -4,18 +4,18 @@ import {baseEntity} from "./baseEntity";
 @Entity()
 export class Users extends baseEntity {
     @Property({type: "string"})
-    username!: string;
+    email!: string;
 
     @Property({type: "string"})
-    login!: string;
+    name!: string;
 
     @Property({type: "string"})
     password!: string;
 
-    constructor(login: string, password: string, username: string) {
+    constructor(name: string, password: string, email: string) {
         super();
-        this.login = login;
+        this.name = name;
         this.password = password;
-        this.username = username;
+        this.email = email;
     }
 }
