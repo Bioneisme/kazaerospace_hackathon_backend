@@ -1,12 +1,13 @@
 import cors from "cors";
-import cookieParser from "cookie-parser";
-import usersRoutes from "./routes/userRoute";
+import {logging, writeDateLogging} from "./middleware/loggingMiddleware";
+import userRoutes from "./routes/userRoute";
+import productRoute from "./routes/productRoute";
 import {SERVER_PORT} from "./config/settings";
 import {config} from "./config/mikro-orm";
 import logger from "./config/logger";
+import cookieParser from "cookie-parser";
 import express, {Application} from "express";
 import {EntityManager, MikroORM} from "@mikro-orm/core";
-import logging from "./middleware/loggingMiddleware";
 
 const app: Application = express();
 
@@ -19,8 +20,10 @@ app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
 
+app.use(writeDateLogging);
+app.use("/api/users", userRoutes);
+app.use("/api/products", productRoute);
 app.use(logging);
-app.use("/api/users", usersRoutes);
 
 app.listen(SERVER_PORT, async () => {
     DI.orm = await MikroORM.init(config);
