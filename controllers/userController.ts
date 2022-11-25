@@ -8,14 +8,14 @@ import {Users} from "../entities";
 
 async function register(req: Request, res: Response) {
     try {
-        const {username, login, password} = req.body;
+        const {name, email, password} = req.body;
 
-        if (!username || !password || !login) {
-            res.status(400).send("Missing username, email or password");
+        if (!name || !password || !name) {
+            res.status(400).send("Missing name, email or password");
             return;
         }
 
-        const existingUser = await DI.em.findOne(Users, {login});
+        const existingUser = await DI.em.findOne(Users, {email});
 
         if (existingUser) {
             res.status(400).send("User already exists");
@@ -26,8 +26,8 @@ async function register(req: Request, res: Response) {
         const hashedPassword = await bcryptjs.hash(password, slat);
 
         const user = DI.em.create(Users, {
-            username,
-            login,
+            email,
+            name,
             password: hashedPassword
         });
 
@@ -46,14 +46,14 @@ async function register(req: Request, res: Response) {
 
 async function login(req: Request, res: Response) {
     try {
-        const {login, password} = req.body;
+        const {email, password} = req.body;
 
-        if (!login || !password) {
-            res.status(400).send("Missing login or password");
+        if (!email || !password) {
+            res.status(400).send("Missing email or password");
             return;
         }
 
-        const user = await DI.em.findOne(Users, {login});
+        const user = await DI.em.findOne(Users, {email});
 
         if (!user) {
             res.status(400).send("User does not exist");
@@ -100,7 +100,7 @@ async function validate(req: Request, res: Response) {
         if (!user) return res.status(400).send("User not found");
         (req as UserRequest).user = user;
 
-        return res.status(200).json({jwt, username: user.username});
+        return res.status(200).json({jwt, user});
     } catch (e) {
         logger.error(`getCurrentUser: ${e}`);
     }
