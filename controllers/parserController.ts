@@ -1,8 +1,9 @@
 import {NextFunction, Request, Response} from "express";
-import {productObject, storeURLs, technoDomCategories} from "../types";
-import {technoDomParser} from "../helpers/parsers/technoDomParser";
-import {DI} from "../index";
+import {productObject, storeURLs, sulpakCategories, technoDomCategories} from "../types";
 import {Products} from "../entities";
+import {technoDomParser} from "../helpers/parsers/technoDomParser";
+import {sulpakParser} from "../helpers/parsers/sulpakParser";
+import {DI} from "../index";
 import logger from "../config/logger";
 
 
@@ -12,8 +13,19 @@ export async function parser(req: Request, res: Response, next: NextFunction) {
         switch (store) {
             case 'techno_dom': {
                 if (category in technoDomCategories) {
-                    const baseURL = `${storeURLs.techno_dom}${technoDomCategories[category as keyof typeof technoDomCategories]}`
+                    const baseURL = `${storeURLs.techno_dom}/${technoDomCategories[category as keyof typeof technoDomCategories]}`
                     const data = await technoDomParser(baseURL, baseURL, category);
+                    const {oldProductsTotal, newProductsTotal, parsedTotal, productsTotal} = await addProductsToDB(data);
+                    res.json({oldProductsTotal, newProductsTotal, parsedTotal, productsTotal});
+                } else {
+                    res.status(404).json({error: 'invalid_category'});
+                }
+                return next();
+            }
+            case 'sulpak': {
+                if (category in sulpakCategories) {
+                    const URL = `${storeURLs.sulpak}/f/${sulpakCategories[category as keyof typeof sulpakCategories]}`
+                    const data = await sulpakParser(URL, storeURLs.sulpak, category);
                     const {oldProductsTotal, newProductsTotal, parsedTotal, productsTotal} = await addProductsToDB(data);
                     res.json({oldProductsTotal, newProductsTotal, parsedTotal, productsTotal});
                 } else {
@@ -27,6 +39,7 @@ export async function parser(req: Request, res: Response, next: NextFunction) {
             }
         }
     } catch (e) {
+        logger.error(`parser: ${e}`);
         return next();
     }
 }
