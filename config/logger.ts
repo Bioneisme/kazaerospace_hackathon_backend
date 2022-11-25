@@ -1,5 +1,6 @@
 import moment from "moment";
 import {createLogger, transports, format} from "winston";
+import "winston-daily-rotate-file";
 
 
 const formatter = format((info) => {
@@ -16,6 +17,19 @@ const logger = createLogger({
                 formatter,
                 format.simple()
             )
+        }),
+        new transports.DailyRotateFile({
+            format: format.combine(
+                formatter,
+                format.simple()
+            ),
+            filename: 'app-%DATE%.log',
+            dirname: './logs',
+            datePattern: 'YYYY-MM-DD-HH',
+            zippedArchive: true,
+            maxFiles: '90d',
+            maxSize: '20m',
+            frequency: '1h'
         })
     ]
 });
