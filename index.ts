@@ -1,10 +1,12 @@
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import usersRoutes from "./routes/userRoute";
 import {SERVER_PORT} from "./config/settings";
 import {config} from "./config/mikro-orm";
 import logger from "./config/logger";
 import express, {Application} from "express";
 import {EntityManager, MikroORM} from "@mikro-orm/core";
+import logging from "./middleware/loggingMiddleware";
 
 const app: Application = express();
 
@@ -16,6 +18,9 @@ export const DI = {} as {
 app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
+
+app.use(logging);
+app.use("/api/users", usersRoutes);
 
 app.listen(SERVER_PORT, async () => {
     DI.orm = await MikroORM.init(config);
