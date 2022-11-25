@@ -8,7 +8,6 @@ export async function technoDomParser(URL: string, baseURL: string,
                                       category: string, page: number = 1,
                                       data: productObject[] = []): Promise<productObject[]> {
     const res = await needle("get", `${URL}?page=${page}`);
-    logger.info(`TechnoDom Parser: category=${category} page=${page}`)
     const $ = cheerio.load(res.body);
     const results = $('li[class=category-page-list__item]');
     results.each(function () {

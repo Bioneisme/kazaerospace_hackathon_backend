@@ -13,6 +13,7 @@ export async function parser(req: Request, res: Response, next: NextFunction) {
         switch (store) {
             case 'techno_dom': {
                 if (category in technoDomCategories) {
+                    logger.info(`TechnoDom Parser: category=${category}`)
                     const baseURL = `${storeURLs.techno_dom}/${technoDomCategories[category as keyof typeof technoDomCategories]}`
                     const data = await technoDomParser(baseURL, baseURL, category);
                     const {oldProductsTotal, newProductsTotal, parsedTotal, productsTotal} = await addProductsToDB(data);
@@ -24,6 +25,7 @@ export async function parser(req: Request, res: Response, next: NextFunction) {
             }
             case 'sulpak': {
                 if (category in sulpakCategories) {
+                    logger.info(`Sulpak Parser: category=${category}`)
                     const URL = `${storeURLs.sulpak}/f/${sulpakCategories[category as keyof typeof sulpakCategories]}`
                     const data = await sulpakParser(URL, storeURLs.sulpak, category);
                     const {oldProductsTotal, newProductsTotal, parsedTotal, productsTotal} = await addProductsToDB(data);

@@ -8,7 +8,6 @@ export async function sulpakParser(URL: string, baseURL: string,
                                    data: productObject[] = []): Promise<productObject[]> {
     const url = page == 1 ? URL : `${URL}&page=${page}`;
     const res = await needle("get", url);
-    logger.info(`Sulpak Parser: category=${category} page=${page}`)
     const $ = cheerio.load(res.body);
     const results = $('[class="product__item product__item-js tile-container"]');
     results.each(function () {

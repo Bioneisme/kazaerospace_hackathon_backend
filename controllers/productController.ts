@@ -6,11 +6,11 @@ import {Products} from "../entities";
 export async function getAllProducts(req: Request, res: Response, next: NextFunction) {
     try {
         const products = await DI.em.find(Products, {});
-        const titles: string[] = [];
+        const titles = new Set();
         products.forEach(product => {
-            titles.push(product.title);
+            titles.add(product.title);
         });
-        res.json(titles);
+        res.json(Array.from(titles));
         return next();
     } catch (e) {
         logger.error(`getAllProducts: ${e}`);
