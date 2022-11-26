@@ -7,10 +7,15 @@ import {Users} from "../entities";
 
 async function register(req: Request, res: Response, next: NextFunction) {
     try {
-        const {name, email, password} = req.body;
+        const {name, email, password, repeat_password} = req.body;
 
         if (!name || !password || !name) {
             res.status(400).send("Missing name, email or password");
+            return next();
+        }
+
+        if (password != repeat_password) {
+            res.status(400).send("Passwords don't match");
             return next();
         }
 
@@ -74,6 +79,16 @@ async function login(req: Request, res: Response, next: NextFunction) {
     }
 }
 
+async function logout(req: Request, res: Response, next: NextFunction) {
+    try {
+        (req as UserRequest).user = undefined;
+        res.status(200);
+        return next();
+    } catch (e) {
+        return next();
+    }
+}
+
 async function getCurrentUser(req: Request, res: Response, next: NextFunction) {
     try {
         const id = (req as UserRequest).user?.id;
@@ -112,4 +127,4 @@ async function validate(req: Request, res: Response, next: NextFunction) {
     }
 }
 
-export {register, login, getCurrentUser, validate};
+export {register, login, logout, getCurrentUser, validate};
